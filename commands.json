@@ -202,5 +202,35 @@
 		"name": "how",
 		"description": "A quick introduction to using the rolodex",
 		"type": 1
+	},
+	{
+		"name": "debug",
+		"description": "Debug stuff for Chris only",
+		"type": 2,
+		"options": [
+			{
+				"name": "sql",
+				"type": 1,
+				"options": [
+					{
+						"name": "query",
+						"description": "The SQL query to run",
+						"type": 3,
+						"required": true
+					},
+					{
+						"name": "print",
+						"description": "Whether to send the results to the channel or not",
+						"type": 5,
+						"required": false
+					}
+				]
+			},
+			{
+				"name": "stats",
+				"description": "How many entries are in the rolodex?",
+				"type": 1
+			}
+		]
 	}
 ]

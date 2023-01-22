@@ -225,6 +225,38 @@ client.on('interactionCreate', async interaction => {
 						interaction.reply({ephemeral: true, content: `Rolodex entry deleted!`});
 					});
 					break;
+
+				case 'debug':
+					// Check if the user running the command is the dev?
+					if (!interaction.user.id === config.discord.devId) return interaction.reply({ephemeral: true, content: `You don't have permission to run this command!`});
+					// Switch subcommands
+					switch (interaction.options.getSubcommand()) {
+						case 'sql':
+							// Get the SQL query
+							let sql = interaction.options.get('query').value;
+							let print = interaction.options.get('print').value;
+							// Run the query
+							db.run(sql, (res, err) => {
+								// If there was an error, tell the user the exact error, if not, tell the user the exact response
+								if (err) {
+									interaction.reply({ephemeral: !print || true, content: `Error: ${err}`});
+								} else {
+									interaction.reply({ephemeral: !print || true, content: `Response: ${res}`});
+								}
+							})
+							break;
+						case 'stats':
+							// Get how many rows are in the database
+							db.get(`SELECT COUNT(*) FROM rolodex`, (err, row) => {
+								if (err) {
+									console.error(err);
+								}
+								// Tell the user the amount of entries
+								interaction.reply({content: `There are ${row['COUNT(*)']} entries in the database`});
+							});
+							break;
+					}
+					break;
 				default: // Description: If the subcommand doesn't exist, tell the user
 					interaction.reply({ephemeral: true, content: `That subcommand doesn't exist!`});
 					break;
