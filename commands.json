@@ -205,7 +205,8 @@
 	},
 	{
 		"name": "debug",
-		"type": 2,
+		"description": "Debug Commands. Developer Only",
+		"type": 1,
 		"options": [
 			{
 				"name": "sql",
