@@ -76,11 +76,14 @@ client.on('interactionCreate', async interaction => {
 					embed.setTitle(`Rolodex Entry for ${user.username}`)
 					embed.setColor('#0099ff')
 					// Get avatar URL from Discord API based on the user's ID
-					if (row.name) embed.addFields([{
-						name: "Name",
-						value: row.name,
-						inline: true
-					}])
+					if (row.name) {
+						embed.setTitle(`Rolodex Entry for ${row.name}`)
+						embed.addFields([{
+							name: "Name",
+							value: row.name,
+							inline: true
+						}])
+					}
 					// Company
 					if (row.company) embed.addFields([{
 						name: 'Company',
@@ -163,11 +166,17 @@ client.on('interactionCreate', async interaction => {
 						// If the user doesn't have an entry, create one
 						if (!row) {
 							db.run(`INSERT INTO rolodex (id) VALUES (${userId})`);
-							interaction.reply({ephemeral: true, content: `Rolodex entry generated`});
+							interaction.reply({
+								ephemeral: true,
+								content: `Rolodex entry generated`
+							});
 						}
 						// If the user already has an entry, tell them
 						else {
-							interaction.reply({ephemeral: true, content: `You already have a rolodex entry`});
+							interaction.reply({
+								ephemeral: true,
+								content: `You already have a rolodex entry`
+							});
 						}
 					});
 					break;
@@ -182,12 +191,18 @@ client.on('interactionCreate', async interaction => {
 						}
 						// If the user doesn't have an entry, tell them
 						if (!row) {
-							interaction.reply({ephemeral: true, content: `You don't have a rolodex entry!`});
+							interaction.reply({
+								ephemeral: true,
+								content: `You don't have a rolodex entry!`
+							});
 						}
 						// If the user does have an entry, set the key to the value
 						else {
 							db.prepare(`UPDATE rolodex SET ${key} = ? WHERE id = ${userId}`).run(value);
-							interaction.reply({ephemeral: true, content: `Rolodex entry updated!`});
+							interaction.reply({
+								ephemeral: true,
+								content: `Rolodex entry updated!`
+							});
 						}
 					});
 					break;
@@ -201,12 +216,18 @@ client.on('interactionCreate', async interaction => {
 						}
 						// If the user doesn't have an entry, tell them
 						if (!row) {
-							interaction.reply({ephemeral: true, content: `You don't have a rolodex entry!`});
+							interaction.reply({
+								ephemeral: true,
+								content: `You don't have a rolodex entry!`
+							});
 						}
 						// If the user does have an entry, delete the key
 						else {
 							db.run(`UPDATE rolodex SET ${key1} = NULL WHERE id = ${userId}`);
-							interaction.reply({ephemeral: true, content: `Rolodex entry updated!`});
+							interaction.reply({
+								ephemeral: true,
+								content: `Rolodex entry updated!`
+							});
 						}
 					});
 					break;
@@ -218,17 +239,26 @@ client.on('interactionCreate', async interaction => {
 						}
 						// If the user doesn't have an entry, tell them
 						if (!row) {
-							interaction.reply({ephemeral: true, content: `You don't have a rolodex entry!`});
+							interaction.reply({
+								ephemeral: true,
+								content: `You don't have a rolodex entry!`
+							});
 						}
 						// If the user does have an entry, delete it
 						db.run(`DELETE FROM rolodex WHERE id = ${userId}`);
-						interaction.reply({ephemeral: true, content: `Rolodex entry deleted!`});
+						interaction.reply({
+							ephemeral: true,
+							content: `Rolodex entry deleted!`
+						});
 					});
 					break;
 
 				case 'debug':
 					// Check if the user running the command is the dev?
-					if (!interaction.user.id === config.discord.devId) return interaction.reply({ephemeral: true, content: `You don't have permission to run this command!`});
+					if (!interaction.user.id === config.discord.devId) return interaction.reply({
+						ephemeral: true,
+						content: `You don't have permission to run this command!`
+					});
 					// Switch subcommands
 					switch (interaction.options.getSubcommand()) {
 						case 'sql':
@@ -239,9 +269,15 @@ client.on('interactionCreate', async interaction => {
 							db.run(sql, (res, err) => {
 								// If there was an error, tell the user the exact error, if not, tell the user the exact response
 								if (err) {
-									interaction.reply({ephemeral: !print || true, content: `Error: ${err}`});
+									interaction.reply({
+										ephemeral: !print || true,
+										content: `Error: ${err}`
+									});
 								} else {
-									interaction.reply({ephemeral: !print || true, content: `Response: ${res}`});
+									interaction.reply({
+										ephemeral: !print || true,
+										content: `Response: ${res}`
+									});
 								}
 							})
 							break;
@@ -252,13 +288,18 @@ client.on('interactionCreate', async interaction => {
 									console.error(err);
 								}
 								// Tell the user the amount of entries
-								interaction.reply({content: `There are ${row['COUNT(*)']} entries in the database`});
+								interaction.reply({
+									content: `There are ${row['COUNT(*)']} entries in the database`
+								});
 							});
 							break;
 					}
 					break;
 				default: // Description: If the subcommand doesn't exist, tell the user
-					interaction.reply({ephemeral: true, content: `That subcommand doesn't exist!`});
+					interaction.reply({
+						ephemeral: true,
+						content: `That subcommand doesn't exist!`
+					});
 					break;
 			}
 	}
