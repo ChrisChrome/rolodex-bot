@@ -210,6 +210,7 @@
 		"options": [
 			{
 				"name": "sql",
+				"description": "Run a SQL query",
 				"type": 1,
 				"options": [
 					{
