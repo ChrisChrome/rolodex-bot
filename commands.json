@@ -205,7 +205,6 @@
 	},
 	{
 		"name": "debug",
-		"description": "Debug stuff for Chris only",
 		"type": 2,
 		"options": [
 			{
