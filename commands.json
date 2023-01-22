@@ -1,0 +1,201 @@
+[
+	{
+		"name": "lookup",
+		"description": "Look up a user in the rolodex",
+		"options": [
+			{
+				"name": "user",
+				"type": 1,
+				"description": "Look up a user",
+				"options": [
+					{
+						"name": "user",
+						"type": 6,
+						"description": "The user to look up",
+						"required": true
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "rolodex",
+		"description": "Manage your rolodex entry",
+		"options": [
+			{
+				"name": "generate",
+				"description": "Generate a blank rolodex entry for yourself if you don't have one",
+				"type": 1
+			},
+			{
+				"name": "set",
+				"description": "Set a value of your rolodex entry",
+				"type": 1,
+				"options": [
+					{
+						"name": "key",
+						"description": "The key to set",
+						"type": 3,
+						"required": true,
+						"choices": [
+							{
+								"name": "Name",
+								"value": "name"
+							},
+							{
+								"name": "Company",
+								"value": "company"
+							},
+							{
+								"name": "Phone Number 1",
+								"value": "phone1"
+							},
+							{
+								"name": "Phone Number 2",
+								"value": "phone2"
+							},
+							{
+								"name": "Phone Number 3",
+								"value": "phone3"
+							},
+							{
+								"name": "Fax Number 1",
+								"value": "fax1"
+							},
+							{
+								"name": "Fax Number 2",
+								"value": "fax2"
+							},
+							{
+								"name": "Fax Number 3",
+								"value": "fax3"
+							},
+							{
+								"name": "Email Address",
+								"value": "email"
+							},
+							{
+								"name": "Street Address",
+								"value": "address"
+							},
+							{
+								"name": "City",
+								"value": "city"
+							},
+							{
+								"name": "State",
+								"value": "state"
+							},
+							{
+								"name": "Zip Code",
+								"value": "zip"
+							},
+							{
+								"name": "Country",
+								"value": "country"
+							},
+							{
+								"name": "Website",
+								"value": "website"
+							},
+							{
+								"name": "Notes",
+								"value": "notes"
+							}
+						]
+					},
+					{
+						"name": "value",
+						"description": "The value to set",
+						"type": 3,
+						"required": true
+					}
+				]
+			},
+			{
+				"name": "remove",
+				"description": "Remove a value from your rolodex entry",
+				"type": 1,
+				"options": [
+					{
+						"name": "key",
+						"description": "The key to remove",
+						"type": 3,
+						"required": true,
+						"choices": [
+							{
+								"name": "Name",
+								"value": "name"
+							},
+							{
+								"name": "Company",
+								"value": "company"
+							},
+							{
+								"name": "Phone Number 1",
+								"value": "phone1"
+							},
+							{
+								"name": "Phone Number 2",
+								"value": "phone2"
+							},
+							{
+								"name": "Phone Number 3",
+								"value": "phone3"
+							},
+							{
+								"name": "Fax Number 1",
+								"value": "fax1"
+							},
+							{
+								"name": "Fax Number 2",
+								"value": "fax2"
+							},
+							{
+								"name": "Fax Number 3",
+								"value": "fax3"
+							},
+							{
+								"name": "Email Address",
+								"value": "email"
+							},
+							{
+								"name": "Street Address",
+								"value": "address"
+							},
+							{
+								"name": "City",
+								"value": "city"
+							},
+							{
+								"name": "State",
+								"value": "state"
+							},
+							{
+								"name": "Zip Code",
+								"value": "zip"
+							},
+							{
+								"name": "Country",
+								"value": "country"
+							},
+							{
+								"name": "Website",
+								"value": "website"
+							},
+							{
+								"name": "Notes",
+								"value": "notes"
+							}
+						]
+					}
+				]
+			},
+			{
+				"name": "delete",
+				"description": "Remove your rolodex entry entirely",
+				"type": 1
+			}
+		]
+	}
+]

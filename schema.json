@@ -1,0 +1,21 @@
+{
+	"rolodex": [
+		"id TEXT PRIMARY KEY NOT NULL",
+		"name TEXT",
+		"phone1 TEXT",
+		"phone2 TEXT",
+		"phone3 TEXT",
+		"fax1 TEXT",
+		"fax2 TEXT",
+		"fax3 TEXT",
+		"email TEXT",
+		"address TEXT",
+		"city TEXT",
+		"state TEXT",
+		"zip TEXT",
+		"country TEXT",
+		"notes TEXT",
+		"website TEXT",
+		"company TEXT"
+	]
+}
