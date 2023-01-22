@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const fs = require("fs");
 const {
 	REST,
 	Routes
@@ -18,7 +19,7 @@ db.on('open', () => {
 		db.run(`CREATE TABLE IF NOT EXISTS ${table} (${schema[table].join(', ')})`);
 	}
 });
-
+let vCardsJS = require('vcards-js');
 const commands = require('./commands.json');
 
 const rest = new REST({
@@ -48,8 +49,8 @@ client.on('ready', () => {
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
-	console.log(`Received command ${interaction.commandName} from ${interaction.user.tag} (${interaction.user.id})`);
-	console.log(interaction.options)
+	//console.log(`Received command ${interaction.commandName} from ${interaction.user.tag} (${interaction.user.id})`);
+	//console.log(interaction.options)
 	// Command Schema is in commands.json
 	switch (interaction.commandName) {
 		case 'how':
@@ -73,12 +74,15 @@ client.on('interactionCreate', async interaction => {
 				}
 				// If the user exists, send their information
 				if (row) {
+					let vCard = vCardsJS();
 					// Reply with an embed, if an entry is null, don't include it
 					let embed = new Discord.EmbedBuilder()
 					embed.setTitle(`Rolodex Entry for ${user.username}`)
 					embed.setColor('#0099ff')
 					// Get avatar URL from Discord API based on the user's ID
 					if (row.name) {
+						vCard.firstName = row.name.split(' ')[0];
+						vCard.lastName = row.name.split(' ')[1] || '';
 						embed.setTitle(`Rolodex Entry for ${row.name}`)
 						embed.addFields([{
 							name: "Name",
@@ -87,17 +91,28 @@ client.on('interactionCreate', async interaction => {
 						}])
 					}
 					// Company
-					if (row.company) embed.addFields([{
-						name: 'Company',
-						value: row.company,
-						inline: true
-					}]);
+					if (row.company) {
+						vCard.organization = row.company;
+						embed.addFields([{
+							name: 'Company',
+							value: row.company,
+							inline: true
+						}]);
+					}
 					// Phone number(s), three rows, phone1, phone2, phone3
 					if (row.phone1 || row.phone2 || row.phone3) {
 						let phones = '';
+						// remove spaces, dashes, parentheses, and all other special characters except for plus sign, then add them to an array, then get rid of any characters past the 12th character
+						
+						let phoneArray = [];
+						if (row.phone1) phoneArray.push(row.phone1.replace(/[^0-9+]/g, '').substring(0, 12));
+						if (row.phone2) phoneArray.push(row.phone2.replace(/[^0-9+]/g, '').substring(0, 12));
+						if (row.phone3) phoneArray.push(row.phone3.replace(/[^0-9+]/g, '').substring(0, 12));
 						if (row.phone1) phones += row.phone1 + '\n';
 						if (row.phone2) phones += row.phone2 + '\n';
 						if (row.phone3) phones += row.phone3 + '\n';
+						
+						vCard.otherPhone = phoneArray;
 
 						embed.addFields([{
 							name: 'Phone Number(s)',
@@ -108,9 +123,16 @@ client.on('interactionCreate', async interaction => {
 					// Fax number(s), three rows, fax1, fax2, fax3
 					if (row.fax1 || row.fax2 || row.fax3) {
 						let faxes = '';
+
+						let faxArray = [];
+						if (row.fax1) faxArray.push(row.fax1.replace(/[^0-9+]/g, '').substring(0, 12));
+						if (row.fax2) faxArray.push(row.fax2.replace(/[^0-9+]/g, '').substring(0, 12));
+						if (row.fax3) faxArray.push(row.fax3.replace(/[^0-9+]/g, '').substring(0, 12));
 						if (row.fax1) faxes += row.fax1 + '\n';
 						if (row.fax2) faxes += row.fax2 + '\n';
 						if (row.fax3) faxes += row.fax3 + '\n';
+
+						vCard.homeFax = faxArray;
 						embed.addFields([{
 							name: 'Fax Number(s)',
 							value: faxes,
@@ -118,33 +140,51 @@ client.on('interactionCreate', async interaction => {
 						}]);
 					}
 					// Email Address
-					if (row.email) embed.addFields([{
-						name: 'Email Address',
-						value: `[${row.email}](mailto:${row.email})`,
-						inline: true
-					}]);
+					if (row.email) {
+						vCard.workEmail = row.email;
+						embed.addFields([{
+							name: 'Email Address',
+							value: `[${row.email}](mailto:${row.email})`,
+							inline: true
+						}]);
+					}
 					// Website
-					if (row.website) embed.addFields([{
-						name: 'Website',
-						value: `[${row.website}](${row.website})`,
-						inline: true
-					}]);
+					if (row.website) {
+						vCard.url = row.website;
+						embed.addFields([{
+							name: 'Website',
+							value: `[${row.website}](${row.website})`,
+							inline: true
+						}]);
+					}
 					// Address
-					if (row.address || row.city || row.state || row.zip || row.country) embed.addFields([{
-						name: 'Address',
-						value: `${row.address ? row.address + '\n' : ''}${row.city ? row.city + ', ' : ''}${row.state ? row.state + ' ' : ''}${row.zip ? row.zip : ''}${row.country ? '\n' + row.country : ''}`,
-						inline: true
-					}]);
+					if (row.address || row.city || row.state || row.zip || row.country) {
+						embed.addFields([{
+							name: 'Address',
+							value: `${row.address ? row.address + '\n' : ''}${row.city ? row.city + ', ' : ''}${row.state ? row.state + ' ' : ''}${row.zip ? row.zip : ''}${row.country ? '\n' + row.country : ''}`,
+							inline: true
+						}]);
+					}
 					// Notes, Entirely based on user input
-					if (row.notes) embed.addFields([{
-						name: 'Notes',
-						value: row.notes,
-						inline: true
-					}]);
-
-					interaction.reply({
-						embeds: [embed]
-					});
+					if (row.notes) {
+						vCard.note = row.notes;
+						embed.addFields([{
+							name: 'Notes',
+							value: row.notes,
+							inline: true
+						}]);
+					}
+					vCard.saveToFile(`./tmp/vcard.vcf`);
+					setTimeout(() => {
+						interaction.reply({
+							embeds: [embed],
+							files: [{
+								attachment: `./tmp/vcard.vcf`
+							}]
+						}).then(() => {
+							fs.unlinkSync(`./tmp/vcard.vcf`);
+						});
+					}, 200);
 				} else {
 					// If the user doesn't have an entry, tell them
 					interaction.reply({
