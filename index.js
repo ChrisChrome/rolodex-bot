@@ -266,8 +266,7 @@ client.on('interactionCreate', async interaction => {
 							let sql = interaction.options.get('query').value;
 							let print = interaction.options.get('print').value;
 							// Run the query
-							db.run(sql, (res, err) => {
-								// If there was an error, tell the user the exact error, if not, tell the user the exact response
+							db.prepare(sql, (err, res) => {
 								if (err) {
 									interaction.reply({
 										ephemeral: !print || true,
@@ -279,9 +278,10 @@ client.on('interactionCreate', async interaction => {
 										content: `Response: ${res}`
 									});
 								}
-							})
+							}).run();
 							break;
 						case 'stats':
+							console.log("Debug Stats")
 							// Get how many rows are in the database
 							db.get(`SELECT COUNT(*) FROM rolodex`, (err, row) => {
 								if (err) {
