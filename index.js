@@ -49,6 +49,7 @@ client.on('ready', () => {
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
 	console.log(`Received command ${interaction.commandName} from ${interaction.user.tag} (${interaction.user.id})`);
+	console.log(interaction.options)
 	// Command Schema is in commands.json
 	switch (interaction.commandName) {
 		case 'how':
