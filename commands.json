@@ -197,5 +197,10 @@
 				"type": 1
 			}
 		]
+	},
+	{
+		"name": "how",
+		"description": "A quick introduction to using the rolodex",
+		"type": 1
 	}
 ]

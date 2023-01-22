@@ -50,6 +50,13 @@ client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
 	// Command Schema is in commands.json
 	switch (interaction.commandName) {
+		case 'how':
+			let embed = require("./embeds/how.json");
+			interaction.reply({
+				embeds: [embed],
+				ephemeral: true
+			});
+			break;
 		case 'lookup': //Description: Look up a user in the rolodex
 			// Get the user's ID
 			const user = interaction.options.get('user').user;

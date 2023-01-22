@@ -1,0 +1,34 @@
+{
+	"title": "How to use the Rolodex",
+	"description": "Below is a quick list of commands to get you started with the Rolodex bot!",
+	"color": 16711680,
+	"footer": {
+		"text": "Rolodex | Made by @Chris Chrome#9158"
+	},
+	"fields": [
+		{
+			"name": "/rolodex generate",
+			"value": "***YOU MUST RUN THIS FIRST***\nThis will generate a blank rolodex for you to use."
+		},
+		{
+			"name": "/lookup",
+			"value": "This will look up a user's information in the rolodex."
+		},
+		{
+			"name": "/rolodex set",
+			"value": "This will let you update your information in the rolodex."
+		},
+		{
+			"name": "/rolodex remove",
+			"value": "This will let you remove a specific field from your rolodex entry."
+		},
+		{
+			"name": "/rolodex delete",
+			"value": "This will delete your information from the rolodex."
+		},
+		{
+			"name": "/help",
+			"value": "This will show you this message."
+		}
+	]
+}
