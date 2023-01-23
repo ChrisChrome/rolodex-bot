@@ -103,7 +103,7 @@ client.on('interactionCreate', async interaction => {
 					if (row.phone1 || row.phone2 || row.phone3) {
 						let phones = '';
 						// remove spaces, dashes, parentheses, and all other special characters except for plus sign, then add them to an array, then get rid of any characters past the 12th character
-						
+
 						let phoneArray = [];
 						if (row.phone1) phoneArray.push(row.phone1.replace(/[^0-9+]/g, '').substring(0, 12));
 						if (row.phone2) phoneArray.push(row.phone2.replace(/[^0-9+]/g, '').substring(0, 12));
@@ -111,7 +111,7 @@ client.on('interactionCreate', async interaction => {
 						if (row.phone1) phones += row.phone1 + '\n';
 						if (row.phone2) phones += row.phone2 + '\n';
 						if (row.phone3) phones += row.phone3 + '\n';
-						
+
 						vCard.otherPhone = phoneArray;
 
 						embed.addFields([{
@@ -199,6 +199,40 @@ client.on('interactionCreate', async interaction => {
 			const userId = interaction.user.id;
 			// Switch on the subcommand
 			switch (interaction.options.getSubcommand()) {
+				case 'export': // Description: Export the entire rolodex
+					// Get all the entries
+					db.all(`SELECT * FROM rolodex`, (err, rows) => {
+						if (err) {
+							console.error(err);
+						}
+						// If there are no entries, tell the user
+						if (!rows.length) {
+							interaction.reply({
+								content: 'There are no entries in the rolodex.',
+								ephemeral: true
+							});
+						} else {
+							// Create either a json object or CSV based on the user's preference, default to CSV
+							let exportData = '';
+							if (interaction.options.getString('format') === 'json') {
+								exportData = JSON.stringify(rows, null, 2);
+							} else {
+								exportData = 'id,first_name,last_name,company,job_title,phone1,phone2,phone3,fax1,fax2,fax3,email,website,address,city,state,zip,country,notes\r\n';
+								rows.forEach(row => {
+									exportData += `${row.id},${row.first_name},${row.last_name},${row.company},${row.job_title},${row.phone1},${row.phone2},${row.phone3},${row.fax1},${row.fax2},${row.fax3},${row.email},${row.website},${row.address},${row.city},${row.state},${row.zip},${row.country},${row.notes}\r\n`;
+								});
+							}
+							// Send the file
+							interaction.reply({
+								files: [{
+									attachment: Buffer.from(exportData),
+									name: `rolodex.${interaction.options.getString('format')}`
+								}]
+							});
+						}
+					});
+					break;
+
 				case 'generate': // Description: Generate a rolodex entry for yourself
 					// Check if the user already has a rolodex entry
 					db.get(`SELECT * FROM rolodex WHERE id = ${userId}`, (err, row) => {

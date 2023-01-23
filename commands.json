@@ -23,6 +23,29 @@
 		"description": "Manage your rolodex entry",
 		"options": [
 			{
+				"name": "export",
+				"description": "Export the entire rolodex",
+				"type": 1,
+				"options": [
+					{
+						"name": "format",
+						"description": "The format to export in",
+						"type": 3,
+						"required": false,
+						"choices": [
+							{
+								"name": "JSON",
+								"value": "json"
+							},
+							{
+								"name": "CSV",
+								"value": "csv"
+							}
+						]
+					}
+				]
+			},
+			{
 				"name": "generate",
 				"description": "Generate a blank rolodex entry for yourself if you don't have one",
 				"type": 1
