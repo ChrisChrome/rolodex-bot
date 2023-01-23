@@ -150,10 +150,15 @@ client.on('interactionCreate', async interaction => {
 					}
 					// Website
 					if (row.website) {
-						vCard.url = row.website;
+						sites = row.website.split(' | ');
+						vCard.url = row.website[0];
+						allSites = '';
+						sites.forEach(site => {
+							allsites += `[${site}](${site})\n`;
+						})
 						embed.addFields([{
 							name: 'Website',
-							value: `[${row.website}](${row.website})`,
+							value: allSites,
 							inline: true
 						}]);
 					}
