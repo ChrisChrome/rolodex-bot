@@ -154,7 +154,7 @@ client.on('interactionCreate', async interaction => {
 						vCard.url = row.website[0];
 						allSites = '';
 						sites.forEach(site => {
-							allsites += `[${site}](${site})\n`;
+							allSites += `[${site}](${site})\n`;
 						})
 						embed.addFields([{
 							name: 'Website',
