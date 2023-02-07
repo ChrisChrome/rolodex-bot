@@ -130,4 +130,5 @@ dist
 .pnp.*
 
 config.json
+config.json.old
 database.db

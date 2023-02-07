@@ -232,28 +232,54 @@
 		"type": 1,
 		"options": [
 			{
-				"name": "sql",
-				"description": "Run a SQL query",
+				"name": "stats",
+				"description": "How many entries are in the rolodex?",
+				"type": 1
+			}
+		]
+	},
+	{
+		"name": "role",
+		"description": "Modify a user's roles",
+		"type": 1,
+		"options": [
+			{
+				"name": "add",
+				"description": "Add a user to a role",
 				"type": 1,
 				"options": [
 					{
-						"name": "query",
-						"description": "The SQL query to run",
-						"type": 3,
+						"name": "user",
+						"description": "The user to add",
+						"type": 6,
 						"required": true
 					},
 					{
-						"name": "print",
-						"description": "Whether to send the results to the channel or not",
-						"type": 5,
-						"required": false
+						"name": "role",
+						"description": "The role to add the user to",
+						"type": 8,
+						"required": true
 					}
 				]
 			},
 			{
-				"name": "stats",
-				"description": "How many entries are in the rolodex?",
-				"type": 1
+				"name": "remove",
+				"description": "Remove a user from a role",
+				"type": 1,
+				"options": [
+					{
+						"name": "user",
+						"description": "The user to remove",
+						"type": 6,
+						"required": true
+					},
+					{
+						"name": "role",
+						"description": "The role to remove the user from",
+						"type": 8,
+						"required": true
+					}
+				]
 			}
 		]
 	}

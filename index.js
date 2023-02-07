@@ -12,6 +12,8 @@ const config = require('./config.json');
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('database.db');
 
+
+
 db.on('open', () => {
 	const schema = require('./schema.json');
 	// Create tables if they don't exist
@@ -49,7 +51,7 @@ client.on('ready', () => {
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
-	//console.log(`Received command ${interaction.commandName} from ${interaction.user.tag} (${interaction.user.id})`);
+	console.log(`Received command ${interaction.commandName} from ${interaction.user.tag} (${interaction.user.id})`);
 	//console.log(interaction.options)
 	// Command Schema is in commands.json
 	switch (interaction.commandName) {
@@ -333,49 +335,6 @@ client.on('interactionCreate', async interaction => {
 						});
 					});
 					break;
-
-				case 'debug':
-					// Check if the user running the command is the dev?
-					if (!interaction.user.id === config.discord.devId) return interaction.reply({
-						ephemeral: true,
-						content: `You don't have permission to run this command!`
-					});
-					// Switch subcommands
-					switch (interaction.options.getSubcommand()) {
-						case 'sql':
-							// Get the SQL query
-							let sql = interaction.options.get('query').value;
-							let print = interaction.options.get('print').value;
-							// Run the query
-							db.prepare(sql, (err, res) => {
-								if (err) {
-									interaction.reply({
-										ephemeral: !print || true,
-										content: `Error: ${err}`
-									});
-								} else {
-									interaction.reply({
-										ephemeral: !print || true,
-										content: `Response: ${res}`
-									});
-								}
-							}).run();
-							break;
-						case 'stats':
-							console.log("Debug Stats")
-							// Get how many rows are in the database
-							db.get(`SELECT COUNT(*) FROM rolodex`, (err, row) => {
-								if (err) {
-									console.error(err);
-								}
-								// Tell the user the amount of entries
-								interaction.reply({
-									content: `There are ${row['COUNT(*)']} entries in the database`
-								});
-							});
-							break;
-					}
-					break;
 				default: // Description: If the subcommand doesn't exist, tell the user
 					interaction.reply({
 						ephemeral: true,
@@ -383,6 +342,81 @@ client.on('interactionCreate', async interaction => {
 					});
 					break;
 			}
+
+			case 'dev':
+				// Check if the user running the command is the dev?
+				if (!interaction.user.id === config.discord.devId) return interaction.reply({
+					ephemeral: true,
+					content: `You don't have permission to run this command!`
+				});
+				// Switch subcommands
+				switch (interaction.options.getSubcommand()) {
+					case 'stats':
+						console.log("Debug Stats")
+						// Get how many rows are in the database
+						db.get(`SELECT COUNT(*) FROM rolodex`, (err, row) => {
+							if (err) {
+								console.error(err);
+							}
+							// Tell the user the amount of entries
+							interaction.reply({
+								content: `There are ${row['COUNT(*)']} entries in the database`
+							});
+						});
+						break;
+				}
+				break;
+			
+			case 'role':
+				// Check if the user running the command is the dev?
+				if (!interaction.user.id === config.discord.devId) return interaction.reply({
+					ephemeral: true,
+					content: `You don't have permission to run this command!`
+				});
+				// Switch subcommands
+				switch (interaction.options.getSubcommand()) {
+					case 'add':
+						// Get the role ID
+						let roleIdA = interaction.options.get('role').value;
+						let userIdA = interaction.options.get('user').value;
+						// Try to add the role to the user
+						try {
+							interaction.guild.members.cache.get(userIdA).roles.add(roleIdA);
+							interaction.reply({
+								ephemeral: true,
+								content: `Role added!`
+							});
+						}
+						// If the role can't be added, tell the user
+						catch (err) {
+							interaction.reply({
+								ephemeral: true,
+								content: `I couldn't add that role!`
+							});
+						}
+						break;
+					case 'remove':
+						// Get the role ID
+						let roleId = interaction.options.get('role').value;
+						let userId = interaction.options.get('user').value;
+						// Try to remove the role from the user
+						try {
+							interaction.guild.members.cache.get(userId).roles.remove(roleId);
+							interaction.reply({
+								ephemeral: true,
+								content: `Role removed!`
+							});
+						}
+						// If the role can't be removed, tell the user
+						catch (err) {
+							interaction.reply({
+								ephemeral: true,
+								content: `I couldn't remove that role!`
+							});
+						}
+						break;
+					}
+				break;
 	}
 
 });
