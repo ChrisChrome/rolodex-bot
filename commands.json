@@ -246,7 +246,7 @@
 				"type": 1,
 				"options": [
 					{
-						"name": "expression",
+						"name": "code",
 						"description": "The expression to evaluate",
 						"type": 3,
 						"required": true
