@@ -207,10 +207,13 @@ client.on('interactionCreate', async interaction => {
 			// Switch on the subcommand
 			switch (interaction.options.getSubcommand()) {
 				case 'export': // Description: Export the entire rolodex
-					return interaction.reply({
-						content: 'This command is currently disabled pending security updates.',
-						ephemeral: true
-					});
+					// Check if user has administrator permission or is dev
+					if (!interaction.member.permissions.has('ADMINISTRATOR') && interaction.user.id !== config.devId) {
+						return interaction.reply({
+							content: 'You do not have permission to use this command.',
+							ephemeral: true
+						});
+					}
 					// Get all the entries
 					db.all(`SELECT * FROM rolodex`, (err, rows) => {
 						if (err) {
