@@ -231,7 +231,7 @@
 		"type": 1
 	},
 	{
-		"name": "debug",
+		"name": "dev",
 		"description": "Debug Commands. Developer Only",
 		"type": 1,
 		"options": [

@@ -383,6 +383,43 @@ client.on('interactionCreate', async interaction => {
 							});
 						});
 						break;
+					case 'eval': // Evaluate a JS expression then return the result
+						// Check if the user running the command is the dev?
+						if (!interaction.user.id === config.discord.devId) return interaction.reply({
+							ephemeral: true,
+							content: `You don't have permission to run this command!`
+						});
+						// Get the expression
+						let expression = interaction.options.get('code').value;
+						// Evaluate the expression
+						try {
+							tmp = eval(expression);
+
+							// If the result is a promise, wait for it to resolve
+							if (tmp instanceof Promise) {
+								tmp.then((result) => {
+									interaction.reply({
+										ephemeral: true,
+										content: `Result: ${result}`
+									});
+								});
+							}
+							// If the result isn't a promise, just return it
+							else {
+								interaction.reply({
+									ephemeral: true,
+									content: `Result: ${tmp}`
+								});
+							}
+						}
+						// If the expression can't be evaluated, tell the user
+						catch (err) {
+							interaction.reply({
+								ephemeral: true,
+								content: `Error: ${err}`
+							});
+						}
+						break;
 				}
 				break;
 
@@ -436,44 +473,7 @@ client.on('interactionCreate', async interaction => {
 						break;
 				}
 				break;
-			case 'eval': // Evaluate a JS expression then return the result
-				// Check if the user running the command is the dev?
-				if (!interaction.user.id === config.discord.devId) return interaction.reply({
-					ephemeral: true,
-					content: `You don't have permission to run this command!`
-				});
-				// Get the expression
-				let expression = interaction.options.get('code').value;
-				// Evaluate the expression
-				try {
-					tmp = eval(expression);
-					
-					// If the result is a promise, wait for it to resolve
-					if (tmp instanceof Promise) {
-						tmp.then((result) => {
-							interaction.reply({
-								ephemeral: true,
-								content: `Result: ${result}`
-							});
-						});
-					}
-					// If the result isn't a promise, just return it
-					else {
-						interaction.reply({
-							ephemeral: true,
-							content: `Result: ${tmp}`
-						});
-					}
-				}
-				// If the expression can't be evaluated, tell the user
-				catch (err) {
-					interaction.reply({
-						ephemeral: true,
-						content: `Error: ${err}`
-					});
-				}
-				break;
-				
+
 	}
 
 });
