@@ -232,9 +232,9 @@ client.on('interactionCreate', async interaction => {
 									});
 									break;
 								case 'csv':
-									exportData = 'id,first_name,last_name,company,job_title,phone1,phone2,phone3,fax1,fax2,fax3,email,website,address,city,state,zip,country,notes\r\n';
+									exportData = 'id,name,company,phone1,phone2,phone3,fax1,fax2,fax3,email,address,city,state,zip,country,notes,website\r\n';
 									rows.forEach(row => {
-										exportData += `${row.id},${row.first_name},${row.last_name},${row.company},${row.job_title},${row.phone1},${row.phone2},${row.phone3},${row.fax1},${row.fax2},${row.fax3},${row.email},${row.website},${row.address},${row.city},${row.state},${row.zip},${row.country},${row.notes}\r\n`;
+										exportData += `${row.id},${row.name},${row.company},${row.phone1},${row.phone2},${row.phone3},${row.fax1},${row.fax2},${row.fax3},${row.email},${row.address},${row.city},${row.state},${row.zip},${row.country},${row.notes},${row.website}\r\n`;
 									});
 									interaction.reply({
 										files: [{
