@@ -207,6 +207,10 @@ client.on('interactionCreate', async interaction => {
 			// Switch on the subcommand
 			switch (interaction.options.getSubcommand()) {
 				case 'export': // Description: Export the entire rolodex
+					return interaction.reply({
+						content: 'This command is currently disabled pending security updates.',
+						ephemeral: true
+					});
 					// Get all the entries
 					db.all(`SELECT * FROM rolodex`, (err, rows) => {
 						if (err) {
