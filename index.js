@@ -469,7 +469,8 @@ client.on('interactionCreate', async interaction => {
 // Random Shit
 
 const csvFormat = (str) => {
-	return `"${str.replace(/"/g, '“')}"`;
+	if (str === null) return '""';
+	return `"${String(str).replace(/"/g, '“')}"`;
 }
 
 client.login(config.discord.token);
