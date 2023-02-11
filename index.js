@@ -396,7 +396,7 @@ client.on('interactionCreate', async interaction => {
 						try {
 							interaction.reply({
 								ephemeral: true,
-								content: eval(expression)
+								content: tostring(eval(expression))
 							});
 						}
 						catch (err) {
@@ -405,7 +405,7 @@ client.on('interactionCreate', async interaction => {
 								content: `Error: ${err}`
 							});
 						}
-						
+
 						
 						break;
 				}
