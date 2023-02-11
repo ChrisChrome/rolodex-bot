@@ -235,7 +235,8 @@ client.on('interactionCreate', async interaction => {
 										files: [{
 											attachment: Buffer.from(exportData),
 											name: `rolodex.json`
-										}]
+										}],
+										ephemeral: true
 									});
 									break;
 								case 'csv':
@@ -247,7 +248,8 @@ client.on('interactionCreate', async interaction => {
 										files: [{
 											attachment: Buffer.from(exportData),
 											name: `rolodex.csv`
-										}]
+										}],
+										ephemeral: true
 									});
 									break;
 								case 'db': // Description: Export the database file
@@ -258,7 +260,8 @@ client.on('interactionCreate', async interaction => {
 										files: [{
 											attachment: dbFile,
 											name: 'rolodex.db'
-										}]
+										}],
+										ephemeral: true
 									});
 									break;
 							}
