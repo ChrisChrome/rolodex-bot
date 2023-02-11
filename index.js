@@ -234,7 +234,7 @@ client.on('interactionCreate', async interaction => {
 								case 'csv':
 									exportData = 'id,name,company,phone1,phone2,phone3,fax1,fax2,fax3,email,address,city,state,zip,country,notes,website\r\n';
 									rows.forEach(row => {
-										exportData += `${row.id},${row.name},${row.company},${row.phone1},${row.phone2},${row.phone3},${row.fax1},${row.fax2},${row.fax3},${row.email},${row.address},${row.city},${row.state},${row.zip},${row.country},${row.notes},${row.website}\r\n`;
+										exportData += `${csvFormat(row.id)},${csvFormat(row.name)},${csvFormat(row.company)},${csvFormat(row.phone1)},${csvFormat(row.phone2)},${csvFormat(row.phone3)},${csvFormat(row.fax1)},${csvFormat(row.fax2)},${csvFormat(row.fax3)},${csvFormat(row.email)},${csvFormat(row.address)},${csvFormat(row.city)},${csvFormat(row.state)},${csvFormat(row.zip)},${csvFormat(row.country)},${csvFormat(row.notes)},${csvFormat(row.website)}\r\n`;
 									});
 									interaction.reply({
 										files: [{
@@ -465,5 +465,11 @@ client.on('interactionCreate', async interaction => {
 	}
 
 });
+
+// Random Shit
+
+const csvFormat = (str) => {
+	return `"${str.replace(/"/g, '“')}"`;
+}
 
 client.login(config.discord.token);
