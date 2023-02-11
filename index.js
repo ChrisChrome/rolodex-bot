@@ -221,21 +221,40 @@ client.on('interactionCreate', async interaction => {
 						} else {
 							// Create either a json object or CSV based on the user's preference, default to CSV
 							let exportData = '';
-							if (interaction.options.getString('format') === 'json') {
-								exportData = JSON.stringify(rows, null, 2);
-							} else {
-								exportData = 'id,first_name,last_name,company,job_title,phone1,phone2,phone3,fax1,fax2,fax3,email,website,address,city,state,zip,country,notes\r\n';
-								rows.forEach(row => {
-									exportData += `${row.id},${row.first_name},${row.last_name},${row.company},${row.job_title},${row.phone1},${row.phone2},${row.phone3},${row.fax1},${row.fax2},${row.fax3},${row.email},${row.website},${row.address},${row.city},${row.state},${row.zip},${row.country},${row.notes}\r\n`;
-								});
+							switch (interaction.options.getString('format')) {
+								case 'json':
+									exportData = JSON.stringify(rows, null, 2);
+									interaction.reply({
+										files: [{
+											attachment: Buffer.from(exportData),
+											name: `rolodex.json`
+										}]
+									});
+									break;
+								case 'csv':
+									exportData = 'id,first_name,last_name,company,job_title,phone1,phone2,phone3,fax1,fax2,fax3,email,website,address,city,state,zip,country,notes\r\n';
+									rows.forEach(row => {
+										exportData += `${row.id},${row.first_name},${row.last_name},${row.company},${row.job_title},${row.phone1},${row.phone2},${row.phone3},${row.fax1},${row.fax2},${row.fax3},${row.email},${row.website},${row.address},${row.city},${row.state},${row.zip},${row.country},${row.notes}\r\n`;
+									});
+									interaction.reply({
+										files: [{
+											attachment: Buffer.from(exportData),
+											name: `rolodex.csv`
+										}]
+									});
+									break;
+								case 'db': // Description: Export the database file
+									// Get the database file
+									const dbFile = fs.readFileSync('./database.db');
+									// Send the file
+									interaction.reply({
+										files: [{
+											attachment: dbFile,
+											name: 'rolodex.db'
+										}]
+									});
+									break;
 							}
-							// Send the file
-							interaction.reply({
-								files: [{
-									attachment: Buffer.from(exportData),
-									name: `rolodex.${interaction.options.getString('format')}`
-								}]
-							});
 						}
 					});
 					break;
@@ -366,7 +385,7 @@ client.on('interactionCreate', async interaction => {
 						break;
 				}
 				break;
-			
+
 			case 'role':
 				// Check if the user running the command is the dev?
 				if (!interaction.user.id === config.discord.devId) return interaction.reply({
@@ -415,7 +434,7 @@ client.on('interactionCreate', async interaction => {
 							});
 						}
 						break;
-					}
+				}
 				break;
 	}
 

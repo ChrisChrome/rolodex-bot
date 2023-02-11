@@ -31,7 +31,7 @@
 						"name": "format",
 						"description": "The format to export in",
 						"type": 3,
-						"required": false,
+						"required": true,
 						"choices": [
 							{
 								"name": "JSON",
@@ -40,6 +40,10 @@
 							{
 								"name": "CSV",
 								"value": "csv"
+							},
+							{
+								"name": "SQLite Database",
+								"value": "db"
 							}
 						]
 					}
@@ -235,6 +239,19 @@
 				"name": "stats",
 				"description": "How many entries are in the rolodex?",
 				"type": 1
+			},
+			{
+				"name": "eval",
+				"description": "Evaluate a JavaScript expression",
+				"type": 1,
+				"options": [
+					{
+						"name": "expression",
+						"description": "The expression to evaluate",
+						"type": 3,
+						"required": true
+					}
+				]
 			}
 		]
 	},
