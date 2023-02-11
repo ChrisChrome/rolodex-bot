@@ -396,7 +396,7 @@ client.on('interactionCreate', async interaction => {
 						try {
 							interaction.reply({
 								ephemeral: true,
-								content: tostring(eval(expression))
+								content: String(eval(expression))
 							});
 						}
 						catch (err) {
