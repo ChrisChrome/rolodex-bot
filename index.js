@@ -391,34 +391,22 @@ client.on('interactionCreate', async interaction => {
 						});
 						// Get the expression
 						let expression = interaction.options.get('code').value;
-						// Evaluate the expression
-						try {
-							tmp = eval(expression);
+						// Evaluate the expression, get the output, and send it
 
-							// If the result is a promise, wait for it to resolve
-							if (tmp instanceof Promise) {
-								tmp.then((result) => {
-									interaction.reply({
-										ephemeral: true,
-										content: `Result: ${result}`
-									});
-								});
-							}
-							// If the result isn't a promise, just return it
-							else {
-								interaction.reply({
-									ephemeral: true,
-									content: `Result: ${tmp}`
-								});
-							}
+						try {
+							interaction.reply({
+								ephemeral: true,
+								content: eval(expression)
+							});
 						}
-						// If the expression can't be evaluated, tell the user
 						catch (err) {
 							interaction.reply({
 								ephemeral: true,
 								content: `Error: ${err}`
 							});
 						}
+						
+						
 						break;
 				}
 				break;
