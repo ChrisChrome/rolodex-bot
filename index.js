@@ -208,7 +208,7 @@ client.on('interactionCreate', async interaction => {
 			switch (interaction.options.getSubcommand()) {
 				case 'export': // Description: Export the entire rolodex
 					// Check if user has administrator permission or is dev
-					if (!interaction.member.permissions.has('ADMINISTRATOR') && interaction.user.id !== config.devId) {
+					if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.Administrator) && interaction.user.id !== config.devId) {
 						return interaction.reply({
 							content: 'You do not have permission to use this command.',
 							ephemeral: true
