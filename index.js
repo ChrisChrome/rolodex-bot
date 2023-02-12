@@ -208,7 +208,7 @@ client.on('interactionCreate', async interaction => {
 			switch (interaction.options.getSubcommand()) {
 				case 'export': // Description: Export the entire rolodex
 					// Check if user has administrator permission or is dev
-					if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.Administrator) && interaction.user.id !== config.discord.devId) {
+					if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.Administrator) && config.discord.devIds.includes(interaction.user.id)) {
 						return interaction.reply({
 							content: 'You do not have permission to use this command.',
 							ephemeral: true
@@ -373,15 +373,13 @@ client.on('interactionCreate', async interaction => {
 			}
 
 			case 'dev':
-				return interaction.reply({
-					ephemeral: true,
-					content: `This command is currently disabled pending security updates\nDebug Info: ${interaction.user.id === config.discord.devId}`
-				});
 				// Check if the user running the command is the dev?
-				if (!interaction.user.id === config.discord.devId) return interaction.reply({
-					ephemeral: true,
-					content: `You don't have permission to run this command!`
-				});
+				if (!config.discord.devIds.includes(interaction.user.id)) {
+					return interaction.reply({
+						ephemeral: true,
+						content: `You don't have permission to run this command!`
+					});
+				}
 				// Switch subcommands
 				switch (interaction.options.getSubcommand()) {
 					case 'stats':
@@ -398,11 +396,6 @@ client.on('interactionCreate', async interaction => {
 						});
 						break;
 					case 'eval': // Evaluate a JS expression then return the result
-						// Check if the user running the command is the dev?
-						if (!interaction.user.id === config.discord.devId) return interaction.reply({
-							ephemeral: true,
-							content: `You don't have permission to run this command!`
-						});
 						// Get the expression
 						let expression = interaction.options.get('code').value;
 						// Evaluate the expression, get the output, and send it
@@ -412,22 +405,21 @@ client.on('interactionCreate', async interaction => {
 								ephemeral: true,
 								content: String(eval(expression))
 							});
-						}
-						catch (err) {
+						} catch (err) {
 							interaction.reply({
 								ephemeral: true,
 								content: `Error: ${err}`
 							});
 						}
 
-						
+
 						break;
 				}
 				break;
 
 			case 'role':
 				// Check if the user running the command is the dev?
-				if (!interaction.user.id === config.discord.devId) return interaction.reply({
+				if (!config.discord.devIds.includes(interaction.user.id)) return interaction.reply({
 					ephemeral: true,
 					content: `You don't have permission to run this command!`
 				});
