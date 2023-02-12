@@ -375,7 +375,7 @@ client.on('interactionCreate', async interaction => {
 			case 'dev':
 				return interaction.reply({
 					ephemeral: true,
-					content: `This command is currently disabled pending security updates`
+					content: `This command is currently disabled pending security updates\nDebug Info: ${interaction.userid === config.discord.devId}`
 				});
 				// Check if the user running the command is the dev?
 				if (!interaction.user.id === config.discord.devId) return interaction.reply({
