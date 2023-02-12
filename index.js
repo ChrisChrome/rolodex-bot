@@ -9,6 +9,7 @@ const client = new Discord.Client({
 	intents: ['GuildMembers', 'Guilds']
 });
 const config = require('./config.json');
+const lang = require('./lang.json');
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('database.db');
 
@@ -79,15 +80,16 @@ client.on('interactionCreate', async interaction => {
 					let vCard = vCardsJS();
 					// Reply with an embed, if an entry is null, don't include it
 					let embed = new Discord.EmbedBuilder()
-					embed.setTitle(`Rolodex Entry for ${user.username}`)
+					// Use lang file
+					embed.setTitle(lang.responses.rolodex.entry_for.replace('%s', user.username))
 					embed.setColor('#0099ff')
 					// Get avatar URL from Discord API based on the user's ID
 					if (row.name) {
 						vCard.firstName = row.name.split(' ')[0];
 						vCard.lastName = row.name.split(' ')[1] || '';
-						embed.setTitle(`Rolodex Entry for ${row.name}`)
+						embed.setTitle(lang.responses.rolodex.entry_for.replace('%s', row.name))
 						embed.addFields([{
-							name: "Name",
+							name: lang.responses.rolodex.fields.name,
 							value: row.name,
 							inline: true
 						}])
@@ -96,7 +98,7 @@ client.on('interactionCreate', async interaction => {
 					if (row.company) {
 						vCard.organization = row.company;
 						embed.addFields([{
-							name: 'Company',
+							name: lang.responses.rolodex.fields.company,
 							value: row.company,
 							inline: true
 						}]);
@@ -117,7 +119,7 @@ client.on('interactionCreate', async interaction => {
 						vCard.otherPhone = phoneArray;
 
 						embed.addFields([{
-							name: 'Phone Number(s)',
+							name: lang.responses.rolodex.fields.phone,
 							value: phones,
 							inline: true
 						}]);
@@ -136,7 +138,7 @@ client.on('interactionCreate', async interaction => {
 
 						vCard.homeFax = faxArray;
 						embed.addFields([{
-							name: 'Fax Number(s)',
+							name: lang.responses.rolodex.fields.fax,
 							value: faxes,
 							inline: true
 						}]);
@@ -145,7 +147,7 @@ client.on('interactionCreate', async interaction => {
 					if (row.email) {
 						vCard.workEmail = row.email;
 						embed.addFields([{
-							name: 'Email Address',
+							name: lang.responses.rolodex.fields.email,
 							value: `[${row.email}](mailto:${row.email})`,
 							inline: true
 						}]);
@@ -159,7 +161,7 @@ client.on('interactionCreate', async interaction => {
 							allSites += `[${site}](${site})\n`;
 						})
 						embed.addFields([{
-							name: 'Website',
+							name: lang.responses.rolodex.fields.website,
 							value: allSites,
 							inline: true
 						}]);
@@ -167,7 +169,7 @@ client.on('interactionCreate', async interaction => {
 					// Address
 					if (row.address || row.city || row.state || row.zip || row.country) {
 						embed.addFields([{
-							name: 'Address',
+							name: lang.responses.rolodex.fields.address,
 							value: `${row.address ? row.address + '\n' : ''}${row.city ? row.city + ', ' : ''}${row.state ? row.state + ' ' : ''}${row.zip ? row.zip : ''}${row.country ? '\n' + row.country : ''}`,
 							inline: true
 						}]);
@@ -176,7 +178,7 @@ client.on('interactionCreate', async interaction => {
 					if (row.notes) {
 						vCard.note = row.notes;
 						embed.addFields([{
-							name: 'Notes',
+							name: lang.responses.rolodex.fields.notes,
 							value: row.notes,
 							inline: true
 						}]);
@@ -195,7 +197,7 @@ client.on('interactionCreate', async interaction => {
 				} else {
 					// If the user doesn't have an entry, tell them
 					interaction.reply({
-						content: 'That user does not have a rolodex entry.',
+						content: lang.responses.rolodex.no_entry,
 						ephemeral: true
 					});
 				}
@@ -208,11 +210,13 @@ client.on('interactionCreate', async interaction => {
 			switch (interaction.options.getSubcommand()) {
 				case 'export': // Description: Export the entire rolodex
 					// Check if user has administrator permission or is dev
-					if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.Administrator) && config.discord.devIds.includes(interaction.user.id)) {
-						return interaction.reply({
-							content: 'You do not have permission to use this command.',
+					// If the user both doesn't have admin and isn't in the discord.devIds array, tell them they don't have permission	
+					if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.Administrator) && !config.discord.devIds.includes(interaction.user.id)) {
+						interaction.reply({
+							content: lang.responses.no_perm,
 							ephemeral: true
 						});
+						return;
 					}
 					// Get all the entries
 					db.all(`SELECT * FROM rolodex`, (err, rows) => {
@@ -222,7 +226,7 @@ client.on('interactionCreate', async interaction => {
 						// If there are no entries, tell the user
 						if (!rows.length) {
 							interaction.reply({
-								content: 'There are no entries in the rolodex.',
+								content: lang.responses.rolodex.no_entries,
 								ephemeral: true
 							});
 						} else {
@@ -280,14 +284,14 @@ client.on('interactionCreate', async interaction => {
 							db.run(`INSERT INTO rolodex (id) VALUES (${userId})`);
 							interaction.reply({
 								ephemeral: true,
-								content: `Rolodex entry generated`
+								content: lang.responses.rolodex.generation.success
 							});
 						}
 						// If the user already has an entry, tell them
 						else {
 							interaction.reply({
 								ephemeral: true,
-								content: `You already have a rolodex entry`
+								content: lang.responses.rolodex.generation.failure
 							});
 						}
 					});
@@ -305,7 +309,7 @@ client.on('interactionCreate', async interaction => {
 						if (!row) {
 							interaction.reply({
 								ephemeral: true,
-								content: `You don't have a rolodex entry!`
+								content: lang.responses.rolodex.edit.no_entry
 							});
 						}
 						// If the user does have an entry, set the key to the value
@@ -313,7 +317,7 @@ client.on('interactionCreate', async interaction => {
 							db.prepare(`UPDATE rolodex SET ${key} = ? WHERE id = ${userId}`).run(value);
 							interaction.reply({
 								ephemeral: true,
-								content: `Rolodex entry updated!`
+								content: lang.responses.rolodex.edit.success
 							});
 						}
 					});
@@ -330,7 +334,7 @@ client.on('interactionCreate', async interaction => {
 						if (!row) {
 							interaction.reply({
 								ephemeral: true,
-								content: `You don't have a rolodex entry!`
+								content: lang.responses.rolodex.edit.no_entry
 							});
 						}
 						// If the user does have an entry, delete the key
@@ -338,7 +342,7 @@ client.on('interactionCreate', async interaction => {
 							db.run(`UPDATE rolodex SET ${key1} = NULL WHERE id = ${userId}`);
 							interaction.reply({
 								ephemeral: true,
-								content: `Rolodex entry updated!`
+								content: lang.responses.rolodex.edit.success
 							});
 						}
 					});
@@ -353,21 +357,21 @@ client.on('interactionCreate', async interaction => {
 						if (!row) {
 							interaction.reply({
 								ephemeral: true,
-								content: `You don't have a rolodex entry!`
+								content: lang.responses.rolodex.edit.no_entry
 							});
 						}
 						// If the user does have an entry, delete it
 						db.run(`DELETE FROM rolodex WHERE id = ${userId}`);
 						interaction.reply({
 							ephemeral: true,
-							content: `Rolodex entry deleted!`
+							content: lang.responses.rolodex.edit.deleted
 						});
 					});
 					break;
 				default: // Description: If the subcommand doesn't exist, tell the user
 					interaction.reply({
 						ephemeral: true,
-						content: `That subcommand doesn't exist!`
+						content: lang.responses.sub_not_found
 					});
 					break;
 			}
@@ -377,7 +381,7 @@ client.on('interactionCreate', async interaction => {
 				if (!config.discord.devIds.includes(interaction.user.id)) {
 					return interaction.reply({
 						ephemeral: true,
-						content: `You don't have permission to run this command!`
+						content: lang.responses.no_perm
 					});
 				}
 				// Switch subcommands
@@ -391,7 +395,7 @@ client.on('interactionCreate', async interaction => {
 							}
 							// Tell the user the amount of entries
 							interaction.reply({
-								content: `There are ${row['COUNT(*)']} entries in the database`
+								content: lang.responses.dev.stats.replace('%s', row['COUNT(*)'])
 							});
 						});
 						break;
@@ -421,7 +425,7 @@ client.on('interactionCreate', async interaction => {
 				// Check if the user running the command is the dev?
 				if (!config.discord.devIds.includes(interaction.user.id)) return interaction.reply({
 					ephemeral: true,
-					content: `You don't have permission to run this command!`
+					content: lang.responses.no_perm
 				});
 				// Switch subcommands
 				switch (interaction.options.getSubcommand()) {

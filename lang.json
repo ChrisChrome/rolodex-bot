@@ -1,0 +1,34 @@
+{
+	"responses": {
+		"no_perm": "You do not have permission to do that.",
+		"sub_not_found": "That subcommand doesn't exist!",
+		"dev": {
+			"stats": "There are %s entries in the database."
+		},
+		"rolodex": {
+			"entry_for": "Rolodex entry for %s",
+			"no_entry": "No entry for %s",
+			"no_entries": "No entries in the rolodex.",
+			"generation": {
+				"success": "Rolodex entry generated.",
+				"failure": "You already have an entry"
+			},
+			"edit": {
+				"success": "Rolodex entry updated.",
+				"failure": "Rolodex entry could not be edited.",
+				"no_entry": "You do not have an entry in the rolodex.",
+				"deleted": "Rolodex entry deleted."
+			},
+			"fields": {
+				"name": "Name",
+				"phone": "Phone Numbers",
+				"fax": "Fax Numbers",
+				"email": "Email Addresse",
+				"address": "Address",
+				"notes": "Notes",
+				"website": "Website",
+				"company": "Company"
+			}
+		}
+	}
+}
