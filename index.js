@@ -212,12 +212,10 @@ client.on('interactionCreate', async interaction => {
 					// Check if user has administrator permission or is dev
 					// If the user both doesn't have admin and isn't in the discord.devIds array, tell them they don't have permission	
 					if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.Administrator) && !config.discord.devIds.includes(interaction.user.id)) {
-						console.log(`!!!!!!!ITS EXPORT!!!!!!!`)
-						interaction.reply({
+						return interaction.reply({
 							content: lang.responses.no_perm,
 							ephemeral: true
 						});
-						return;
 					}
 					// Get all the entries
 					db.all(`SELECT * FROM rolodex`, (err, rows) => {
@@ -376,106 +374,6 @@ client.on('interactionCreate', async interaction => {
 					});
 					break;
 			}
-
-			case 'dev':
-				// Check if the user running the command is the dev?
-				if (!config.discord.devIds.includes(interaction.user.id)) {
-					console.log("!!!!!!!ITS DEV!!!!!!!!");
-					return interaction.reply({
-						ephemeral: true,
-						content: lang.responses.no_perm
-					});
-				}
-				// Switch subcommands
-				switch (interaction.options.getSubcommand()) {
-					case 'stats':
-						console.log("Debug Stats")
-						// Get how many rows are in the database
-						db.get(`SELECT COUNT(*) FROM rolodex`, (err, row) => {
-							if (err) {
-								console.error(err);
-							}
-							// Tell the user the amount of entries
-							interaction.reply({
-								content: lang.responses.dev.stats.replace('%s', row['COUNT(*)'])
-							});
-						});
-						break;
-					case 'eval': // Evaluate a JS expression then return the result
-						// Get the expression
-						let expression = interaction.options.get('code').value;
-						// Evaluate the expression, get the output, and send it
-
-						try {
-							interaction.reply({
-								ephemeral: true,
-								content: String(eval(expression))
-							});
-						} catch (err) {
-							interaction.reply({
-								ephemeral: true,
-								content: `Error: ${err}`
-							});
-						}
-
-
-						break;
-				}
-				break;
-
-			case 'role':
-				// Check if the user running the command is the dev?
-				if (!config.discord.devIds.includes(interaction.user.id)) {
-					console.log("!!!!!!!ITS ROLE!!!!!!!!");
-					return interaction.reply({
-						ephemeral: true,
-						content: lang.responses.no_perm
-					});
-				}
-				// Switch subcommands
-				switch (interaction.options.getSubcommand()) {
-					case 'add':
-						// Get the role ID
-						let roleIdA = interaction.options.get('role').value;
-						let userIdA = interaction.options.get('user').value;
-						// Try to add the role to the user
-						try {
-							interaction.guild.members.cache.get(userIdA).roles.add(roleIdA);
-							interaction.reply({
-								ephemeral: true,
-								content: `Role added!`
-							});
-						}
-						// If the role can't be added, tell the user
-						catch (err) {
-							interaction.reply({
-								ephemeral: true,
-								content: `I couldn't add that role!`
-							});
-						}
-						break;
-					case 'remove':
-						// Get the role ID
-						let roleId = interaction.options.get('role').value;
-						let userId = interaction.options.get('user').value;
-						// Try to remove the role from the user
-						try {
-							interaction.guild.members.cache.get(userId).roles.remove(roleId);
-							interaction.reply({
-								ephemeral: true,
-								content: `Role removed!`
-							});
-						}
-						// If the role can't be removed, tell the user
-						catch (err) {
-							interaction.reply({
-								ephemeral: true,
-								content: `I couldn't remove that role!`
-							});
-						}
-						break;
-				}
-				break;
 
 	}
 
