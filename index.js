@@ -355,7 +355,7 @@ client.on('interactionCreate', async interaction => {
 						}
 						// If the user doesn't have an entry, tell them
 						if (!row) {
-							interaction.reply({
+							return interaction.reply({
 								ephemeral: true,
 								content: lang.responses.rolodex.edit.no_entry
 							});
