@@ -212,6 +212,7 @@ client.on('interactionCreate', async interaction => {
 					// Check if user has administrator permission or is dev
 					// If the user both doesn't have admin and isn't in the discord.devIds array, tell them they don't have permission	
 					if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.Administrator) && !config.discord.devIds.includes(interaction.user.id)) {
+						console.log(`!!!!!!!ITS EXPORT!!!!!!!`)
 						interaction.reply({
 							content: lang.responses.no_perm,
 							ephemeral: true
@@ -379,6 +380,7 @@ client.on('interactionCreate', async interaction => {
 			case 'dev':
 				// Check if the user running the command is the dev?
 				if (!config.discord.devIds.includes(interaction.user.id)) {
+					console.log("!!!!!!!ITS DEV!!!!!!!!");
 					return interaction.reply({
 						ephemeral: true,
 						content: lang.responses.no_perm
@@ -423,10 +425,13 @@ client.on('interactionCreate', async interaction => {
 
 			case 'role':
 				// Check if the user running the command is the dev?
-				if (!config.discord.devIds.includes(interaction.user.id)) return interaction.reply({
-					ephemeral: true,
-					content: lang.responses.no_perm
-				});
+				if (!config.discord.devIds.includes(interaction.user.id)) {
+					console.log("!!!!!!!ITS ROLE!!!!!!!!");
+					return interaction.reply({
+						ephemeral: true,
+						content: lang.responses.no_perm
+					});
+				}
 				// Switch subcommands
 				switch (interaction.options.getSubcommand()) {
 					case 'add':
