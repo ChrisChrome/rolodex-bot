@@ -38,7 +38,7 @@ client.on('ready', () => {
 		try {
 			console.log('Started refreshing application (/) commands.');
 			await rest.put(
-				Routes.applicationGuildCommands(client.user.id, config.discord.guildId), {
+				Routes.applicationCommands(client.user.id), {
 					body: commands
 				}
 			);
@@ -212,10 +212,11 @@ client.on('interactionCreate', async interaction => {
 					// Check if user has administrator permission or is dev
 					// If the user both doesn't have admin and isn't in the discord.devIds array, tell them they don't have permission	
 					if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.Administrator) && !config.discord.devIds.includes(interaction.user.id)) {
-						return interaction.reply({
+						interaction.reply({
 							content: lang.responses.no_perm,
 							ephemeral: true
 						});
+						return;
 					}
 					// Get all the entries
 					db.all(`SELECT * FROM rolodex`, (err, rows) => {
